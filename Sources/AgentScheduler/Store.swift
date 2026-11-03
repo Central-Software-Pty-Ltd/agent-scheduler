@@ -15,8 +15,8 @@ final class Store {
     var centralServers: [MCPServer] { home?.centralOS ?? [] }
 
     init() {
-        Storage.prepare()
-        refresh()
+        Storage.standard.prepare()
+        refresh(notify: false)
         Task {
             while true {
                 try? await Task.sleep(for: .seconds(3))
@@ -25,17 +25,15 @@ final class Store {
         }
     }
 
-    func refresh() {
-        let loaded = Storage.loadTasks()
+    func refresh(notify: Bool = true) {
+        let loaded = Storage.standard.loadTasks()
         let jobs = Launchd.jobs()
         let isPaused = !Launchd.disabled().isDisjoint(with: loaded.map(\.id))
         var latest: [String: TaskRun] = [:]
         for task in loaded {
             if !isPaused { Launchd.sync(task, running: jobs[task.id]) }
-            guard let run = Storage.lastRun(task.id, reusing: runs[task.id]) else { continue }
-            if let previous = runs[task.id], previous.stamp == run.stamp, previous.exitCode == nil, run.exitCode != nil {
-                Notifications.post(task, run)
-            }
+            guard let run = Storage.standard.lastRun(task.id, reusing: runs[task.id]) else { continue }
+            if notify, run.exitCode != nil, run != runs[task.id] { Notifications.post(task, run) }
             latest[task.id] = run
         }
         let nowRunning = Set(jobs.filter(\.value).keys)
@@ -46,13 +44,13 @@ final class Store {
     }
 
     func save(_ task: ClaudeTask) {
-        Storage.write(task)
+        Storage.standard.write(task)
         refresh()
     }
 
     func delete(_ task: ClaudeTask) {
         Launchd.remove(task.id)
-        Storage.trash(task.id)
+        Storage.standard.trash(task.id)
         refresh()
     }
 
@@ -72,7 +70,7 @@ final class Store {
         if let session = run.sessionID {
             Shell.openTerminal(Claude.resume(session), in: task.folder)
         } else {
-            NSWorkspace.shared.open(Storage.errorLog(task.id, run))
+            NSWorkspace.shared.open(Storage.standard.errorLog(task.id, run))
         }
     }
 

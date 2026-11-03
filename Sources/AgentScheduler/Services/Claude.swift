@@ -7,23 +7,27 @@ enum Claude {
     static func resume(_ session: String) -> String { "exec claude --resume \(session)" }
 
     static func health(in folder: String) -> Health {
-        let auth = (try? JSONSerialization.jsonObject(with: Data(Shell.zsh("claude auth status --json", in: folder).utf8))) as? [String: Any]
-        return Health(
-            signedIn: auth?["loggedIn"] as? Bool ?? false,
-            servers: MCPServer.parse(Shell.zsh("claude mcp list", in: folder))
-        )
+        .parse(auth: Shell.zsh("claude auth status --json", in: folder), servers: Shell.zsh("claude mcp list", in: folder))
     }
 
     static func readd(_ name: String) {
-        let details = Shell.zsh("claude mcp get \(Shell.quote(name))").split(separator: "\n")
-        let field = { (key: String) in
-            details.first { $0.trimmingCharacters(in: .whitespaces).hasPrefix("\(key):") }
-                .map { $0.split(separator: ":", maxSplits: 1)[1].trimmingCharacters(in: .whitespaces) }
+        for command in readdCommands(name, details: Shell.zsh("claude mcp get \(Shell.quote(name))")) {
+            Shell.zsh(command)
         }
-        guard let type = field("Type"), ["http", "sse"].contains(type), let url = field("URL"), field("Headers") == nil else { return }
+    }
+
+    static func readdCommands(_ name: String, details: String) -> [String] {
+        let lines = details.split(separator: "\n")
+        let field = { (key: String) in
+            lines.first { $0.trimmingCharacters(in: .whitespaces).hasPrefix("\(key):") }
+                .map { $0.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)[1].trimmingCharacters(in: .whitespaces) }
+        }
+        guard let type = field("Type"), ["http", "sse"].contains(type), let url = field("URL"), field("Headers") == nil, field("OAuth") == nil else { return [] }
         let scope = field("Scope")?.split(separator: " ").first?.lowercased() ?? "user"
-        Shell.zsh("claude mcp remove \(Shell.quote(name)) -s \(scope)")
-        Shell.zsh("claude mcp add --transport \(type) -s \(scope) \(Shell.quote(name)) \(Shell.quote(url))")
+        return [
+            "claude mcp remove \(Shell.quote(name)) -s \(scope)",
+            "claude mcp add --transport \(type) -s \(scope) \(Shell.quote(name)) \(Shell.quote(url))",
+        ]
     }
 
     static func addCentralOS() {

@@ -6,8 +6,12 @@ enum Launchd {
     private static var domain: String { "gui/\(getuid())" }
 
     static func jobs() -> [String: Bool] {
+        jobs(Shell.run(launchctl, ["list"]).output)
+    }
+
+    static func jobs(_ list: String) -> [String: Bool] {
         var jobs: [String: Bool] = [:]
-        for line in Shell.run(launchctl, ["list"]).output.split(separator: "\n") {
+        for line in list.split(separator: "\n") {
             let columns = line.split(separator: "\t")
             guard columns.count == 3, columns[2].hasPrefix(prefix) else { continue }
             jobs[String(columns[2].dropFirst(prefix.count))] = columns[0] != "-"
@@ -16,7 +20,11 @@ enum Launchd {
     }
 
     static func disabled() -> Set<String> {
-        Set(Shell.run(launchctl, ["print-disabled", domain]).output.split(separator: "\n")
+        disabled(Shell.run(launchctl, ["print-disabled", domain]).output)
+    }
+
+    static func disabled(_ list: String) -> Set<String> {
+        Set(list.split(separator: "\n")
             .filter { $0.hasSuffix("=> disabled") }
             .compactMap { $0.split(separator: "\"").dropFirst().first }
             .filter { $0.hasPrefix(prefix) }
@@ -59,12 +67,12 @@ enum Launchd {
         URL.homeDirectory.appending(path: "Library/LaunchAgents/\(prefix)\(id).plist")
     }
 
-    private static func plist(_ task: ClaudeTask) -> Data? {
+    static func plist(_ task: ClaudeTask) -> Data? {
         var plist: [String: Any] = [
             "Label": prefix + task.id,
-            "ProgramArguments": ["/bin/zsh", "-l", Storage.runner.path, task.id],
-            "StandardOutPath": Storage.log.path,
-            "StandardErrorPath": Storage.log.path,
+            "ProgramArguments": ["/bin/zsh", "-l", Storage.standard.runner.path, task.id],
+            "StandardOutPath": Storage.standard.log.path,
+            "StandardErrorPath": Storage.standard.log.path,
         ]
         let time = ["Hour": task.minute / 60, "Minute": task.minute % 60]
         switch task.repeats {

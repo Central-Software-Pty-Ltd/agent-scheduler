@@ -72,25 +72,28 @@ struct MCPServer: Equatable, Identifiable {
 
     var id: String
     var status: Status
+    var host: String?
 
     var name: String { String(id.split(separator: ":").last ?? "") }
-    var isCentralOS: Bool { name.lowercased().hasPrefix("centralos") }
+    var isCentralOS: Bool { name.lowercased().hasPrefix("centralos") || host.map { $0 == "centralos.au" || $0.hasSuffix(".centralos.au") } == true }
 
     var title: String {
-        guard isCentralOS else { return name }
+        guard name.lowercased().hasPrefix("centralos") else { return name }
         let suffix = name.dropFirst("centralos".count).trimmingCharacters(in: CharacterSet(charactersIn: "-_ "))
         return suffix.isEmpty ? "centralOS" : "centralOS \(suffix)"
     }
 
     static func parse(_ list: String) -> [MCPServer] {
         list.split(separator: "\n").compactMap { line in
-            guard let colon = line.range(of: ": "), let dash = line.range(of: " - ", options: .backwards) else { return nil }
-            let text = line[dash.upperBound...]
-            let status: Status = text.contains("Connected") ? .connected
-                : text.contains("authentication") ? .needsSignIn
+            let entry = line.components(separatedBy: " — ")[0]
+            guard let colon = entry.range(of: ": "), let dash = entry.range(of: " - ", options: .backwards) else { return nil }
+            let text = entry[dash.upperBound...]
+            let status: Status = text.hasSuffix(" Connected") ? .connected
+                : text.contains("Needs authentication") ? .needsSignIn
                 : text.contains("Disabled") ? .off
                 : .failing
-            return MCPServer(id: String(line[..<colon.lowerBound]), status: status)
+            let target = entry[colon.upperBound...].split(separator: " ").first.flatMap { URL(string: String($0)) }
+            return MCPServer(id: String(entry[..<colon.lowerBound]), status: status, host: target?.host()?.lowercased())
         }
     }
 }
@@ -99,6 +102,11 @@ struct Health: Equatable {
     var signedIn = false
     var servers: [MCPServer] = []
     var checkedAt = Date.now
+
+    static func parse(auth: String, servers: String) -> Health {
+        let status = (try? JSONSerialization.jsonObject(with: Data(auth.utf8))) as? [String: Any]
+        return Health(signedIn: status?["loggedIn"] as? Bool ?? false, servers: MCPServer.parse(servers))
+    }
 
     var centralOS: [MCPServer] { servers.filter(\.isCentralOS) }
     var centralOSConnected: Bool { centralOS.contains { $0.status == .connected } }

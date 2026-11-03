@@ -7,7 +7,7 @@
 <p align="center">Your centralOS agent, working on your Mac on a schedule.</p>
 
 <p align="center">
-  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases/latest"><img src="https://img.shields.io/badge/release-v1.0.0-1c1c1e?style=flat-square" alt="Release v1.0.0"></a>
+  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases/latest"><img src="https://img.shields.io/badge/release-v1.0.1-1c1c1e?style=flat-square" alt="Release v1.0.1"></a>
   <img src="https://img.shields.io/badge/macOS-15%2B-1c1c1e?style=flat-square&logo=apple&logoColor=white" alt="macOS 15 or later">
   <img src="https://img.shields.io/badge/runs%20on-Claude%20Code-1c1c1e?style=flat-square" alt="Runs on Claude Code">
 </p>
@@ -81,6 +81,7 @@ Each run writes `.json` (result and session), `.err` and `.exit` files to `runs/
 ./scripts/make-app.sh --install  # install to ~/Applications and launch
 ./scripts/make-app.sh --zip      # build/Agent-Scheduler-<version>.zip
 ./scripts/make-app.sh --release  # the zip, signed with Developer ID, notarized and stapled
+swift test                       # run the tests
 ```
 
 `--release` needs a Developer ID Application certificate in your keychain and a notary profile, which you save once with `xcrun notarytool store-credentials agent-scheduler`. To use a different certificate or profile, set `SIGNING_IDENTITY` or `NOTARY_PROFILE`.
@@ -93,6 +94,7 @@ You need Xcode 26 or later. The app icon is an Icon Composer file, which needs t
 | `Sources/AgentScheduler/Services/` | Stateless access to the shell, the Claude CLI, task files, launchd and system settings |
 | `Sources/AgentScheduler/Store.swift` | The observable state, taken from files, launchd and the CLI |
 | `Sources/AgentScheduler/Views/` | The menu, the task editor, the launch page and shared components |
+| `Tests/AgentSchedulerTests/` | Tests against real `claude` and `launchctl` output, and `run.sh` run end to end with a stand-in `claude` |
 
 ---
 

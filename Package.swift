@@ -4,5 +4,8 @@ import PackageDescription
 let package = Package(
     name: "AgentScheduler",
     platforms: [.macOS(.v15)],
-    targets: [.executableTarget(name: "AgentScheduler")]
+    targets: [
+        .executableTarget(name: "AgentScheduler"),
+        .testTarget(name: "AgentSchedulerTests", dependencies: ["AgentScheduler"]),
+    ]
 )

@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-11-03
+
+### Fixed
+
+- Re-add no longer crashes on a server with custom headers, and leaves servers with their own OAuth settings alone.
+- A server whose tools fail to load shows as not connecting instead of Connected, and error text no longer changes a server's status.
+- centralOS connected through claude.ai counts as your centralOS connection.
+- A task whose instructions are only spaces or blank lines no longer runs.
+- A task that finishes within a few seconds still sends its notification.
+
 ## [1.0.0] - 2026-11-03
 
 ### Added
