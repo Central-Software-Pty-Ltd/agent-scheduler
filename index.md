@@ -91,4 +91,14 @@ You need Xcode 26 or later. The app icon is an Icon Composer file, which needs t
 | `Sources/AgentScheduler/Store.swift` | The observable state, taken from files, launchd and the CLI |
 | `Sources/AgentScheduler/Views/` | The menu, the task editor, the launch page and shared components |
 
-See [CHANGELOG.md](CHANGELOG.md) for releases.
+---
+
+<p align="center">
+  <a href="https://centralos.au">centralOS</a> ·
+  <a href="https://centralsoftware.au">Central Software</a> ·
+  <a href="https://docs.centralsoftware.au">Help centre</a> ·
+  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases">Releases</a> ·
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
+
+<p align="center"><sub>Made by <a href="https://centralsoftware.au">Central Software</a></sub></p>
