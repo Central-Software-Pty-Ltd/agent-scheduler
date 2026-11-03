@@ -1,6 +1,25 @@
-# Agent Scheduler
+<p align="center">
+  <img src="docs/icon.png" width="112" alt="Agent Scheduler icon">
+</p>
 
-Agent Scheduler runs your centralOS agent on your Mac, on a schedule. Connect your centralOS account and say what you want done and when. Each task runs in the background, even when the app is closed.
+<h1 align="center">Agent Scheduler</h1>
+
+<p align="center">Your centralOS agent, working on your Mac on a schedule.</p>
+
+<p align="center">
+  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases/latest"><img src="https://img.shields.io/badge/release-v1.0.0-1c1c1e?style=flat-square" alt="Release v1.0.0"></a>
+  <img src="https://img.shields.io/badge/macOS-15%2B-1c1c1e?style=flat-square&logo=apple&logoColor=white" alt="macOS 15 or later">
+  <img src="https://img.shields.io/badge/runs%20on-Claude%20Code-1c1c1e?style=flat-square" alt="Runs on Claude Code">
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/hero-dark.png">
+    <img src="docs/hero-light.png" width="756" alt="The Agent Scheduler menu next to a task's schedule and instructions">
+  </picture>
+</p>
+
+Connect your centralOS account, then tell your agent what to do and when. Each task runs in the background, even when the app is closed.
 
 ## Requirements
 
@@ -15,6 +34,13 @@ Agent Scheduler runs your centralOS agent on your Mac, on a schedule. Connect yo
 3. Open it. The first time, right-click the app and choose **Open**, because builds aren't notarized yet.
 
 The launch page shows what to connect:
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/setup-dark.png">
+    <img src="docs/setup-light.png" width="560" alt="The launch page, with centralOS and Claude connected">
+  </picture>
+</p>
 
 - **centralOS** gives your agent your contacts, projects, notes and calendar.
 - **Claude account** is the Claude Code sign-in your agent runs on.
