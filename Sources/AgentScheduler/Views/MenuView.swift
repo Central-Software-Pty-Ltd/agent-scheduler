@@ -89,14 +89,14 @@ struct StatusLine: View {
     var body: some View {
         if let home = store.home, !home.signedIn {
             Row(action: openSetup) { _ in
-                StatusDot(on: false)
+                StatusDot(on: false).frame(width: 16)
                 Text("Sign in to Claude to run tasks").lineLimit(1)
                 Spacer()
             }
             .foregroundStyle(.secondary)
         } else {
             HStack(spacing: 8) {
-                StatusDot(on: !store.paused)
+                StatusDot(on: !store.paused).frame(width: 16)
                 Text(text).lineLimit(1)
             }
             .foregroundStyle(.secondary)
@@ -117,19 +117,13 @@ struct ServerList: View {
 
     var body: some View {
         if store.centralServers.isEmpty {
-            Row(action: store.connectCentralOS) { _ in
-                StatusDot(on: false, size: 7)
-                Text("centralOS")
-                Spacer()
-                Hint(text: store.home == nil ? "Checking…" : "Connect")
+            ServerRow(title: "centralOS", connected: false, action: store.connectCentralOS) { _ in
+                store.home == nil ? "Checking…" : "Connect"
             }
         }
         ForEach(store.centralServers) { server in
-            Row(action: { action(server) }) { hovering in
-                StatusDot(on: server.status == .connected, size: 7)
-                Text(server.name).lineLimit(1)
-                Spacer()
-                Hint(text: hint(server, hovering: hovering))
+            ServerRow(title: server.title, connected: server.status == .connected, action: { action(server) }) {
+                hint(server, hovering: $0)
             }
         }
     }
@@ -145,6 +139,23 @@ struct ServerList: View {
         case .connected: return "Connected"
         case .failing: return "Not connecting"
         case .off, .needsSignIn: return "Off"
+        }
+    }
+}
+
+struct ServerRow: View {
+    let title: String
+    let connected: Bool
+    let action: () -> Void
+    let status: (Bool) -> String
+
+    var body: some View {
+        Row(action: action) { hovering in
+            Image("MenuIcon").resizable().frame(width: 13, height: 13).frame(width: 16)
+            Text(title).lineLimit(1)
+            Spacer()
+            StatusDot(on: connected, size: 6)
+            Hint(text: status(hovering))
         }
     }
 }

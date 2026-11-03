@@ -50,7 +50,6 @@ struct StatusDot: View {
         Circle()
             .fill(on ? Color.green : Color.secondary.opacity(0.5))
             .frame(width: size, height: size)
-            .frame(width: 16)
     }
 }
 

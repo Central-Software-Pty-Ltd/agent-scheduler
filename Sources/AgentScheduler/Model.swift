@@ -76,6 +76,12 @@ struct MCPServer: Equatable, Identifiable {
     var name: String { String(id.split(separator: ":").last ?? "") }
     var isCentralOS: Bool { name.lowercased().hasPrefix("centralos") }
 
+    var title: String {
+        guard isCentralOS else { return name }
+        let suffix = name.dropFirst("centralos".count).trimmingCharacters(in: CharacterSet(charactersIn: "-_ "))
+        return suffix.isEmpty ? "centralOS" : "centralOS \(suffix)"
+    }
+
     static func parse(_ list: String) -> [MCPServer] {
         list.split(separator: "\n").compactMap { line in
             guard let colon = line.range(of: ": "), let dash = line.range(of: " - ", options: .backwards) else { return nil }
