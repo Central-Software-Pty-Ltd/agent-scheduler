@@ -31,7 +31,7 @@ Connect your centralOS account, then tell your agent what to do and when. Each t
 
 1. Download `Agent-Scheduler-<version>.zip` from the latest release.
 2. Unzip it and move **Agent Scheduler** to Applications.
-3. Open it. The first time, right-click the app and choose **Open**, because builds aren't notarized yet.
+3. Open it. Builds are signed and notarized by Apple.
 
 The launch page shows what to connect:
 
@@ -80,7 +80,10 @@ Each run writes `.json` (result and session), `.err` and `.exit` files to `runs/
 ./scripts/make-app.sh            # build/Agent Scheduler.app
 ./scripts/make-app.sh --install  # install to ~/Applications and launch
 ./scripts/make-app.sh --zip      # build/Agent-Scheduler-<version>.zip
+./scripts/make-app.sh --release  # the zip, signed with Developer ID, notarized and stapled
 ```
+
+`--release` needs a Developer ID Application certificate in your keychain and a notary profile, which you save once with `xcrun notarytool store-credentials agent-scheduler`. To use a different certificate or profile, set `SIGNING_IDENTITY` or `NOTARY_PROFILE`.
 
 You need Xcode 26 or later. The app icon is an Icon Composer file, which needs that version of `actool`.
 

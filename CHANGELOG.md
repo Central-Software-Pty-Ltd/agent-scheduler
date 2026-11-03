@@ -15,3 +15,4 @@ All notable changes to this project are documented here. The format follows [Kee
 - Pause and Resume for all schedules.
 - Silent notifications with each task's result.
 - A saved change to a running task waits until that run finishes.
+- Signed with Developer ID and notarized by Apple.

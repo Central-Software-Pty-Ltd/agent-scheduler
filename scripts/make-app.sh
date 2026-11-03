@@ -4,10 +4,12 @@ cd "${0:A:h:h}"
 
 install=false
 zip=false
+release=false
 for arg in "$@"; do
   case $arg in
     --install) install=true ;; # copies the app to ~/Applications and relaunches it
     --zip) zip=true ;; # writes build/Agent-Scheduler-<version>.zip for a GitHub release
+    --release) release=true; zip=true ;; # signs with Developer ID, notarizes, staples, then zips
   esac
 done
 
@@ -24,7 +26,15 @@ xcrun actool Resources/Assets.xcassets Resources/AppIcon.icon \
   --app-icon AppIcon \
   --output-partial-info-plist build/assets.plist \
   --output-format human-readable-text >/dev/null
-codesign --force --sign - "$app"
+if $release; then
+  codesign --force --options runtime --timestamp --sign "${SIGNING_IDENTITY:-Developer ID Application: CENTRAL SOFTWARE PTY LTD (99T8V837A5)}" "$app"
+  ditto -c -k --keepParent "$app" build/notarize.zip
+  xcrun notarytool submit build/notarize.zip --keychain-profile "${NOTARY_PROFILE:-agent-scheduler}" --wait
+  xcrun stapler staple "$app"
+  rm build/notarize.zip
+else
+  codesign --force --sign - "$app"
+fi
 
 if $zip; then
   version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" Info.plist)
