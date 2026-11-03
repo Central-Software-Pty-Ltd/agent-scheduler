@@ -32,7 +32,7 @@ final class RunnerTests {
         storage.write(task)
 
         #expect(try launch(task.id, claudeExit: code) == code)
-        #expect(try read("args") == "-p\n--permission-mode\nauto\n--output-format\njson\n")
+        #expect(try read("args") == "-p\n--model\nclaude-opus-5-5\n--permission-mode\nauto\n--output-format\njson\n")
         #expect(try read("stdin") == task.instructions + "\n")
         #expect(URL(filePath: try read("pwd").trimmingCharacters(in: .newlines)).resolvingSymlinksInPath().path == folder.resolvingSymlinksInPath().path)
 

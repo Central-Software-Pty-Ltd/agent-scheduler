@@ -73,7 +73,7 @@ struct Storage {
     out=$runs/$(date +%Y-%m-%dT%H-%M-%S)
     : > $out.json
     cd "$(field folder)" 2> $out.err || { print 1 > $out.exit; exit 1 }
-    print -r -- $instructions | claude -p --permission-mode auto --output-format json > $out.json 2>> $out.err
+    print -r -- $instructions | claude -p --model claude-opus-5-5 --permission-mode auto --output-format json > $out.json 2>> $out.err
     code=$?
     print $code > $out.exit
     exit $code

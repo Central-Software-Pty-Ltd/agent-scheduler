@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Tasks run on Claude Opus 5.5 instead of Claude Code's default model.
+
 ## [1.0.1] - 2026-11-03
 
 ### Fixed
