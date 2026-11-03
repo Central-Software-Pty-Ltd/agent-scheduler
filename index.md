@@ -7,7 +7,7 @@
 <p align="center">Your centralOS agent, working on your Mac on a schedule.</p>
 
 <p align="center">
-  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases/latest"><img src="https://img.shields.io/badge/release-v1.0.1-1c1c1e?style=flat-square" alt="Release v1.0.1"></a>
+  <a href="https://github.com/Central-Software-Pty-Ltd/agent-scheduler/releases/latest"><img src="https://img.shields.io/badge/release-v1.0.2-1c1c1e?style=flat-square" alt="Release v1.0.2"></a>
   <img src="https://img.shields.io/badge/macOS-15%2B-1c1c1e?style=flat-square&logo=apple&logoColor=white" alt="macOS 15 or later">
   <img src="https://img.shields.io/badge/runs%20on-Claude%20Code-1c1c1e?style=flat-square" alt="Runs on Claude Code">
 </p>
